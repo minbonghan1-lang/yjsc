@@ -1,0 +1,110 @@
+<Window x:Class="UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UI"
+        mc:Ignorable="d"
+        Title="YJSCGAURD" Height="650" Width="1050" MinWidth="1050" MinHeight="600"
+        WindowStartupLocation="CenterScreen"
+        AllowDrop="True" Drop="Window_Drop" DragOver="Window_DragOver">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Menu Grid.Row="0" Background="#F0F0F0" Padding="5,2" FontSize="14">
+            <MenuItem Header="파일 관리(Manage)">
+                <MenuItem Header="파일 추가" Click="btnAdd_Click"/>
+                <MenuItem Header="폴더 추가" Click="btnAddFolder_Click"/>
+                <MenuItem Header="새 폴더" Click="btnNewFolder_Click"/>
+                <MenuItem Header="볼륨 포맷" Click="btnFormat_Click"/>
+                <MenuItem Header="비밀번호 변경" Click="btnChangePassword_Click"/>
+                <Separator/>
+                <MenuItem Header="종료" Click="btnExit_Click"/>
+            </MenuItem>
+            <MenuItem Header="편집(Edit)">
+                <MenuItem Header="복사" Click="btnCopy_Click" x:Name="menuCopy"/>
+                <MenuItem Header="붙여넣기" Click="btnPaste_Click" x:Name="menuPaste"/>
+                <MenuItem Header="삭제" Click="btnDelete_Click" x:Name="menuDelete"/>
+                <MenuItem Header="이름 바꾸기" Click="btnRename_Click" x:Name="menuRename"/>
+            </MenuItem>
+            <MenuItem Header="보기(View)">
+                <MenuItem Header="새로고침" Click="btnRefresh_Click"/>
+                <MenuItem Header="로그 보기" Click="btnViewLog_Click" x:Name="menuViewLog"/>
+            </MenuItem>
+            <MenuItem Header="보안(Security)" x:Name="menuSecurity">
+                <MenuItem Header="보안 환경 전체 해제" Click="btnUnprotect_Click"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- 상단 툴바 -->
+        <Border Grid.Row="1" Background="#2D2D30" Padding="15,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock Text="YJSCGAURD" Foreground="White" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                    <Button Content="📁 상위 폴더로" Margin="0,0,10,0" Padding="10,5" Click="btnUp_Click" Background="#4CAF50" Foreground="White" BorderThickness="0" Cursor="Hand" FontWeight="Bold"/>
+                    <TextBlock x:Name="txtCurrentPath" Text="현재 위치: /" Foreground="LightGray" VerticalAlignment="Center" Margin="5,0,20,0"/>
+                    <TextBlock Text="접근 권한: " Foreground="LightGray" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="txtUserRole" Text="확인 중..." Foreground="#00FF00" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button Content="+ 추가" Margin="0,0,10,0" Padding="15,5" Click="btnAddCombined_Click" Background="#007ACC" Foreground="White" BorderThickness="0" Cursor="Hand" FontWeight="Bold">
+                        <Button.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="파일 추가" Click="btnAdd_Click"/>
+                                <MenuItem Header="폴더 추가" Click="btnAddFolder_Click"/>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
+                    <Button Content="- 선택 삭제" Margin="0,0,10,0" Padding="15,5" Click="btnDelete_Click" Background="#3E3E42" Foreground="White" BorderThickness="0" Cursor="Hand"/>
+                    <Button Content="⟳ 새로고침" Margin="0,0,10,0" Padding="15,5" Click="btnRefresh_Click" Background="#3E3E42" Foreground="White" BorderThickness="0" Cursor="Hand"/>
+                    <Button Content="🔑 비밀번호 변경" Margin="20,0,0,0" Padding="15,5" Click="btnChangePassword_Click" Background="#FF9800" Foreground="White" BorderThickness="0" Cursor="Hand"/>
+                    <Button Content="⚙️ 볼륨 포맷" Margin="10,0,0,0" Padding="15,5" Click="btnFormat_Click" Background="#FF4444" Foreground="White" BorderThickness="0" Cursor="Hand"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- 파일 목록 -->
+        <Grid Grid.Row="2" Margin="10">
+            <ListView x:Name="fileListView" MouseDoubleClick="fileListView_MouseDoubleClick" BorderBrush="Gray" BorderThickness="1">
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="파일 삭제" Click="btnDelete_Click"/>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="파일 이름" Width="350" DisplayMemberBinding="{Binding Name}" />
+                        <GridViewColumn Header="크기" Width="120" DisplayMemberBinding="{Binding Size}" />
+                        <GridViewColumn Header="수정 날짜" Width="200" DisplayMemberBinding="{Binding DateModified}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+
+        <!-- 하단 상태 바 -->
+        <Border Grid.Row="3" Background="#F0F0F0" Padding="10,5" BorderBrush="LightGray" BorderThickness="0,1,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="txtStatus" Grid.Column="0" Text="대기 중..." Foreground="Black" VerticalAlignment="Center"/>
+                <ProgressBar x:Name="progressBar" Grid.Column="1" Height="15" Margin="15,0" Minimum="0" Maximum="100" Visibility="Hidden"/>
+                <TextBlock x:Name="txtProgressPercent" Grid.Column="2" Text="0%" Foreground="Black" VerticalAlignment="Center" Visibility="Hidden" Width="40" TextAlignment="Right"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

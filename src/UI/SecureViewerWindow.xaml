@@ -1,0 +1,18 @@
+<Window x:Class="UI.SecureViewerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        Title="YJSCGAURD" Height="700" Width="1000"
+        WindowStartupLocation="CenterScreen" Background="#1E1E1E"
+        Closed="Window_Closed"
+        Loaded="Window_Loaded"
+        PreviewKeyDown="Window_PreviewKeyDown">
+    <Grid>
+        <!-- 컨트롤은 Visibility로 전환 -->
+        <Image x:Name="imgViewer" Stretch="Uniform" Visibility="Collapsed" Margin="10" />
+        <TextBox x:Name="txtViewer" Background="#2D2D30" Foreground="White" FontSize="16" FontFamily="Consolas"
+                 AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 Visibility="Collapsed" Margin="10" BorderThickness="0"/>
+        <wv2:WebView2 x:Name="pdfViewer" Visibility="Collapsed" />
+    </Grid>
+</Window>
