@@ -407,27 +407,19 @@ namespace UI
                 LoadVaultDirectory();
             }
         }
-
-        private async void fileListView_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+else if (useExternalExecution)
+{
+    try
+    {
+        var psi = new System.Diagnostics.ProcessStartInfo
         {
-            if (fileListView.SelectedItem == null) return;
-
-            if (!policyManager.HasAccessPermission(AccessType.Read))
-            {
-                MessageBox.Show("읽기 권한이 없습니다.", "접근 거부", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            if (fileListView.SelectedItem is FileItem selectedItem)
-            {
-                if (selectedItem.IsDirectory)
-                {
-                    // 폴더 진입
-                    currentVaultPath = Path.Combine(currentVaultPath, selectedItem.ActualName);
-                    LoadVaultDirectory();
-                }
-                else
-                {
+            FileName        = tempPath,
+            UseShellExecute = true,
+            WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+        };
+        System.Diagnostics.Process.Start(psi);
+    }
+// ... 이하 생략
                     if (policyManager.CurrentPolicy.DisableExecution)
                     {
                         MessageBox.Show("보안 정책에 의해 파일 실행이 금지되어 있습니다.", "접근 거부", MessageBoxButton.OK, MessageBoxImage.Warning);
